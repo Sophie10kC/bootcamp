@@ -3,7 +3,8 @@ function blog ($scope, $http, $location){
 	$scope.username = window.location.href.split('/')[4];
 	$scope.blogName = window.location.href.split('/')[5];
 
-	// $scope.blogEntries = [];
+	$scope.blogEntries = [];
+	console.log($scope.blogEntries);
 
 	$http.get('/api/blog/' + $scope.username + '/' + $scope.blogName)
 		.success(function(data) {
@@ -22,6 +23,7 @@ function blog ($scope, $http, $location){
 		$http.post('/api/blog/entry', entry)
 			.success(function(data) {
 				$scope.blogEntries = data;
+				$scope.entry = {};
 			})
 			.error(function(data) {
 				console.log(data);

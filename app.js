@@ -45,7 +45,7 @@ mongoose.connection.once('open', console.log.bind(console, 'DB Connection establ
 */
 api = require('./routes/api')(app);
 
-var server = app.listen(27017, function () {
+var server = app.listen(8080, function () {
   var host = server.address().address;
   var port = server.address().port;
   console.log("Express server listening on port ", port, host);

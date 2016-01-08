@@ -7,24 +7,24 @@ module.exports = function(app) {
 
 	app.get('/api/login/:username', function(req, res){
 		//check for login in stuff
-		User.findOne({'username' : req.params.username }, function(err, user) {
+		var username = req.params.username;
+		User.findOne({'username' : username }, function(err, user) {
 			if(err) {
 				res.send(err);
 				console.log(err);
 			} else {
 				if(user == null){
 					User.create({
-						username: req.body.username
+						username: username
 					}, function(err, user) {
 						if(err) {
 							res.send(err);
 							console.log(err);
-						}
+						} 
 					});
 				}
-
 				res.json({ 'success' : true,
-							'username' : user.username});
+							'username' : username});
 			}
 		});
 	});
@@ -34,6 +34,11 @@ module.exports = function(app) {
 		//Logout
 		res.redirect('/');	
 	});
+
+	/*
+		BLOG
+		====
+	*/
 
 	app.get('/api/blogs/:username', function(req, res) {
 		//get collection of blog posts from a user
@@ -60,7 +65,7 @@ module.exports = function(app) {
 		});
 
 		Blog.find({'author' : req.body.username }, function(err, blogs) {
-			if(err || blogs == null) {
+			if(err) {
 				res.send(err);
 				console.log("Nothing found");
 			} else {
@@ -82,7 +87,7 @@ module.exports = function(app) {
 		});
 
 		Blog.find({'author' : req.params.username }, function(err, blogs) {
-			if(err || blogs == null) {
+			if(err) {
 				res.send(err);
 				console.log("Nothing found");
 			} else {
@@ -100,7 +105,7 @@ module.exports = function(app) {
 	app.get('/api/blog/:username/:blogName', function(req, res) {
 		//get blog entries from a specified blog
 		BlogEntry.find({ 'blogId' : req.params.blogName, 'author' : req.params.username }, function(err, blogEntries) {
-			if(err || blogEntries < 1) {
+			if(err) {
 				console.log("Nothing found");
 				res.send(err);
 			} else {
@@ -131,9 +136,8 @@ module.exports = function(app) {
 			}
 		});
 
-		console.log(req.body.blogName, req.body.author, "posting entry")
 		BlogEntry.find({ 'blogId' : req.body.blogName, 'author' : req.body.author }, function(err, blogEntries) {
-			if(err || blogEntries == 0) {
+			if(err) {
 				console.log("Nothing found");
 				res.send(err);
 			} else {
@@ -152,7 +156,7 @@ module.exports = function(app) {
 		});
 
 		BlogEntry.find({ 'blogId' : req.params.blogId, 'author' : req.params.username }, function(err, blogEntries) {
-			if(err || blogEntries < 1) {
+			if(err) {
 				console.log("Nothing found");
 				res.send(err);
 			} else {

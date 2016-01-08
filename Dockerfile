@@ -1,13 +1,13 @@
 FROM node:4.2.4
 
-RUN mkdir -p /usr/src/app
+RUN mkdir -p /Users/sophiecheong/Sites/bootcamp
 WORKDIR /Users/sophiecheong/Sites/bootcamp
 
-COPY package.json /usr/src/app
+COPY package.json ./
 RUN npm install
 
-COPY . /usr/src/app
+COPY . ./
 
 EXPOSE 8080
 
-CMD["npm", "start"]
+CMD ["node", "app.js"]

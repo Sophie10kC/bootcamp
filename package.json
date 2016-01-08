@@ -7,8 +7,6 @@
 		"express": "4.13.3",
 		"mongoose": "4.3.4",
 		"consolidate": "0.13.1",
-		"body-parser": "1.14.2",
-		"cookie-parser": "1.4.0",
-		"jsonwebtoken": "5.5.3"
+		"body-parser": "1.14.2"
 	}
 }

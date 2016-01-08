@@ -18,10 +18,13 @@ function dashboard ($scope, $http, $location){
 	$scope.addBlog = function(blog){
 		blog.username = $scope.username;
 		console.log(blog);
+		$scope.blogs.push(blog);
 
 		$http.post('/api/blogs', blog)
 			.success(function(data) {
 				$scope.blogs = data;
+				$scope.blog = {};
+
 			})
 			.error(function(data) {
 				console.log(data);
