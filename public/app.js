@@ -4,10 +4,6 @@ bootcamp.config(['$routeProvider', '$locationProvider', function($routeProvider,
 			templateUrl: 'view/partials/signup.html',
 			controller: signup
 		}).
-		when('/login', {
-			templateUrl: 'view/partials/login.html',
-			controller: signup
-		}).
 		when('/signup', {
 			templateUrl: 'view/partials/signup.html',
 			controller: signup
