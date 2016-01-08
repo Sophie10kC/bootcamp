@@ -3,15 +3,21 @@
 	=============
 */
 var express = require('express');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
 routes = require('./routes');
 var engines = require('consolidate');
 var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
 
 var app = express();
 
 app.use(bodyParser.json()); // get information from html forms
 app.use(cookieParser());
+app.use(session({ secret : 'somesecret',
+					resave: false,
+					saveUninitialized: true,
+					cookie: { expires: false } 
+				}));
 
 app.engine('html', engines.mustache);
 app.set('view engine', 'html');

@@ -7,6 +7,7 @@ var blogEntrySchema = new Schema({
 	'text': { type: String, required: true },
 	'author': { type: String, required: true },
 	'blogId': { type: String, required: true },
+	'img': { data: String, contentType: String },
 	'date': { type: Date, default: Date.now}
 });
 

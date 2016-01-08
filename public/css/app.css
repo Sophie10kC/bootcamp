@@ -9,7 +9,6 @@
 }
 
 .login {
-	margin-top: 20%;
 	margin-right: auto;
 	margin-left: auto;
 	border-radius: 5px;
@@ -20,14 +19,15 @@
 	opacity: 0.7;
 }
 
+.microBlog {
+	text-align: center;
+	margin-top: 25%;
+	font-size: 3em;
+}
+
 .signup {
 	width: 400px;
 	margin: 5px auto;
-}
-
-.login {
-	background-color: #C6c6c6;
-	opacity: 0.7;
 }
 
 .header {
@@ -38,7 +38,7 @@
 	font-size: 20px;
 	padding: 15px;
 	color: #fff;
-	text-align: right;
+	/*text-align: right;*/
 }
 
 .background {
@@ -78,15 +78,16 @@
 		}
 
 .blogDescription {
-	margin: 0 5%;
+	margin: 0 2%;
 	font-style: italic;
 	font-size: 1em;
 	color: #808A87;
 }
 
 .entryImage {
-	width: 100%;
+	width: 140px;
 	height: auto;
+	margin: 5px 5px;
 }
 
 .setHeight {
@@ -102,4 +103,21 @@
 
 .trashIcon {
 	color: #808A87;
+}
+
+.homeIcon {
+	margin: 0 15px;
+	color: #fff;
+}
+	a.homeIcon {
+		cursor: pointer;
+		text-decoration: none;
+	}
+
+	a.homeIcon :hover {
+		opacity: 0.9;
+	}
+
+.text-cell {
+	width: 90%
 }

@@ -25,36 +25,21 @@ bootcamp.config(['$routeProvider', '$locationProvider', function($routeProvider,
 		});
 }]);
 
-bootcamp.service('userService', function() {
-	var user;
-
-	var setUser = function(newUser) {
-		user = newUser;
-	};
-
-	var getUser = function() {
-		return user;
-	};
-
-	return {
-		setUser: setUser,
-		getUser: getUser
-	};
-});
-
-bootcamp.service('blogService', function() {
-	var blog;
-
-	var setBlog = function(viewBlog) {
-		blog = viewBlog;
-	};
-
-	var getBlog = function() {
-		return blog;
-	};
-
-	return {
-		setBlog: setBlog,
-		getBlog: getBlog
-	};
-});
+bootcamp.directive("fileread", [function () {
+    return {
+        scope: {
+            fileread: "="
+        },
+        link: function (scope, element, attributes) {
+            element.bind("change", function (changeEvent) {
+                var reader = new FileReader();
+                reader.onload = function (loadEvent) {
+                    scope.$apply(function () {
+                        scope.fileread = loadEvent.target.result;
+                    });
+                }
+                reader.readAsDataURL(changeEvent.target.files[0]);
+            });
+        }
+    }
+}]);

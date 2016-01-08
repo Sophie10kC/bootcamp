@@ -1,7 +1,12 @@
 <div class="background">
 
 <div class="header">
-	Welcome back, {{username}}!
+	<a class="homeIcon" ng-click="goDashboard()">
+		<i class="glyphicon glyphicon-home"></i>
+	</a>
+	<a class="homeIcon" ng-click="logout()">
+    	<i class="glyphicon glyphicon-cog"></i>
+  </a>
 </div>
 
 <div class="content">
@@ -12,12 +17,25 @@
 
 	<hr style="	border-top: 1px dotted #2E6444;">
 
-	<h1 class="blogName"> {{blog.name}} <i class="glyphicon glyphicon-trash trashBlog" ng-click="trash=!trash"></i> </h1>
+	<h1 class="blogName"> {{blogName}} <i class="glyphicon glyphicon-trash trashBlog" ng-click="trash=!trash"></i> </h1>
 
-	<div ng-repeat="entry in blogEntries">
+	<div ng-repeat="entry in blogEntries" style="clear: both;">
 		<div class="entries">
-			 <h2> <a class="blogName">{{entry.title}} </a> <i class="glyphicon glyphicon-remove trashIcon trashBlog" ng-show="trash" ng-click="removeBlogEntry(entry)"></i> </h2>
-			<div class="blogDescription"> {{entry.text}}</div>
+			<table>
+				<tr>
+					<td >
+						<img ng-show="entry.img.data" ng-src="{{entry.img.contentType}},{{entry.img.data}}" class="pull-left img-rounded entryImage" >
+						<img ng-show="!entry.img.data" src="https://www.win.tue.nl/ieeetfpm/lib/exe/fetch.php?cache=&media=shared:unknown.jpg" class="pull-left img-rounded entryImage">
+					</td>
+					<td  class="text-cell">
+						<h3> <a class="blogName">{{entry.title}} </a></h3>
+						<div class="blogDescription"> {{entry.text}}</div>
+					</td>
+					<td class="pull-right">
+						<h3><i class="glyphicon glyphicon-remove trashIcon trashBlog" ng-show="trash" ng-click="removeBlogEntry(entry)"></i></h3>
+					</td>
+				</tr>
+			</table>
 		</div>
 	</div>
 </div>
@@ -42,6 +60,10 @@
     			<label>Text</label>
     			<input class="form-control" ng-model="entry.text" maxlength="160">
     		</div>
+    		<div class="form-group">
+			    <label for="image">Image</label>
+			    <input type="file" id="image" fileread="entry.image">
+			 </div>
     	</form>
     </div>
     <div class="modal-footer">

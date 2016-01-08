@@ -1,65 +1,38 @@
 var User = require('../models/user');
 var Blog = require('../models/blog');
 var BlogEntry = require('../models/blogEntry');
+var fs = require('fs');
 
 module.exports = function(app) {
 
-	// app.get('/cookie', function(req, res){
-	// 	res.clearCookie('username');
-	// 	res.clearCookie('user');
-
-	// 	res.cookie('username', req.body.username).send('cookie is set');
-	// });
-
-	// app.get('/api/logout', function(req, res){
-	// 	res.clearCookie('username');
-	// 	res.send('Cookie deleted');
-	// 	res.redirect('/');
-	// })
-
-	app.get('/api/login/:username/:password', function(req, res){
+	app.get('/api/login/:username', function(req, res){
 		//check for login in stuff
-		console.log('Req.body.username: ', req.params.username);
 		User.findOne({'username' : req.params.username }, function(err, user) {
-			if(err || user == null) {
-				res.send(err);
-				console.log(err);
-			} else {
-				console.log(user);
-				if(user.password === req.params.password) {
-					res.json({ 'success' : true,
-								'username' : user.username});
-				} else {
-					res.json({'success' : false});
-				}
-			}
-		});
-
-	});
-
-	app.post('/api/signup', function(req, res) {
-		//creates a new user
-		User.create({
-			username: req.body.username,
-			password: req.body.password
-		}, function(err, user) {
 			if(err) {
 				res.send(err);
 				console.log(err);
-			}
-
-		User.findOne({'username' : req.body.username }, function(err, user) {
-			if(err || user == null) {
-				res.send(err);
-				console.log(err);
 			} else {
-				console.log(user);
-				res.json(user.username);
+				if(user == null){
+					User.create({
+						username: req.body.username
+					}, function(err, user) {
+						if(err) {
+							res.send(err);
+							console.log(err);
+						}
+					});
+				}
+
+				res.json({ 'success' : true,
+							'username' : user.username});
 			}
 		});
+	});
 
-		});
 
+	app.get('/api/logout', function(req, res) {
+		//Logout
+		res.redirect('/');	
 	});
 
 	app.get('/api/blogs/:username', function(req, res) {
@@ -119,9 +92,14 @@ module.exports = function(app) {
 		});
 	});
 
-	app.get('/api/blog/:blogId', function(req, res) {
+
+	/*
+		ENTRIES
+		=======
+	*/
+	app.get('/api/blog/:username/:blogName', function(req, res) {
 		//get blog entries from a specified blog
-		BlogEntry.find({ 'blogId' : req.params.blogId}, function(err, blogEntries) {
+		BlogEntry.find({ 'blogId' : req.params.blogName, 'author' : req.params.username }, function(err, blogEntries) {
 			if(err || blogEntries < 1) {
 				console.log("Nothing found");
 				res.send(err);
@@ -134,19 +112,46 @@ module.exports = function(app) {
 
 	app.post('/api/blog/entry', function(req, res) {
 		//post a blog entry
+
+		var imageBuffer = { 'data' : null, 'type' : null };
+		if(req.body.image) {
+			imageBuffer = decodeBase64Image(req.body.image);
+		}
+		
 		BlogEntry.create({
 			title : req.body.title,
 			text : req.body.text,
 			author : req.body.author,
-			blogId : req.body.blogId
+			img : { data: imageBuffer.data, contentType: imageBuffer.type },
+			blogId : req.body.blogName
 		}, function(err, entry) {
 			if(err) {
 				console.log(err);
+				// res.send(err);
+			}
+		});
+
+		console.log(req.body.blogName, req.body.author, "posting entry")
+		BlogEntry.find({ 'blogId' : req.body.blogName, 'author' : req.body.author }, function(err, blogEntries) {
+			if(err || blogEntries == 0) {
+				console.log("Nothing found");
+				res.send(err);
+			} else {
+				res.json(blogEntries);
+			}
+		});
+	});
+
+	app.delete('/api/blog/:username/:blogId/entry/:entryId', function(req, res) {
+		BlogEntry.remove({
+			_id : req.params.entryId
+		}, function(err, blogEntry) {
+			if(err){
 				res.send(err);
 			}
 		});
 
-		BlogEntry.find({ 'blogId' : req.body.blogId }, function(err, blogEntries) {
+		BlogEntry.find({ 'blogId' : req.params.blogId, 'author' : req.params.username }, function(err, blogEntries) {
 			if(err || blogEntries < 1) {
 				console.log("Nothing found");
 				res.send(err);
@@ -156,67 +161,17 @@ module.exports = function(app) {
 		});
 	});
 
-	app.delete('/api/blog/:blogId/entry/:entryId', function(req, res) {
-		BlogEntry.remove({
-			_id : req.params.entryId
-		}, function(err, blogEntry) {
-			if(err){
-				res.send(err);
-			}
-		});
+	function decodeBase64Image(dataString) {
+		response = {};
 
-		BlogEntry.find({ 'blogId' : req.params.blogId }, function(err, blogEntries) {
-			if(err || blogEntries < 1) {
-				console.log('Nothing found');
-				res.send(err);
-			} else {
-				res.json(blogEntries);
-			}
-		})
-	});
+		response.type = dataString.split(',')[0];
+		response.data = dataString.split(',')[1];
 
+		return response;
+	}
 
 	//Load the single view file (Angular will handle the rest)
 	app.get('*', function(req, res) {
 		// res.sendFile('./public/view/index');
 	});
 }
-
-
-
-
-// var data = {
-// 	"blogs": [
-// 	{
-// 		"name": "Cats",
-// 		"description": "Meow"	
-// 	}, {
-// 		"name": "Dogs",
-// 		"description": "Woof"
-// 	}]
-// };
-
-// exports.blogs = function(req, res) {
-// 	var blogs = [];
-// 	data.blogs.forEach(function (blog, i) {
-// 		blogs.push({
-// 			id: i,
-// 			title: blog.name,
-// 			description: blog.description
-// 		});
-// 	});
-// 	res.json({
-// 		blogs: blogs
-// 	});
-// };
-
-// exports.blog = function(req, res) {
-// 	var id = req.params.id;
-// 	if(id>=0 && id<data.blogs.length) {
-// 		res.json({
-// 			blog: data.blogs[id]
-// 		});
-// 	} else {
-// 		res.json(false);
-// 	}
-// };
